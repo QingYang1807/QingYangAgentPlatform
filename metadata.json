@@ -1,0 +1,5 @@
+{
+  "name": "Nexus Agent Infra",
+  "description": "A high-performance Agent Orchestration Platform featuring FSM visualization, Ontology Knowledge Graph, and Real-time Pipeline Observability.",
+  "requestFramePermissions": []
+}
