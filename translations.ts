@@ -7,6 +7,7 @@ export const translations = {
       orchestration: 'Agent FSM',
       ontology: 'Ontology Graph',
       logs: 'Event Stream',
+      create: 'Create Agent',
       config: 'Platform Config',
       version: 'V 2.5.0-beta',
       env: 'Env: PROD-US-EAST'
@@ -51,6 +52,16 @@ export const translations = {
     },
     system: {
       healthy: 'System Healthy'
+    },
+    creator: {
+      title: 'Agent Architect Studio',
+      subtitle: 'Generative Configuration • Describe your agent in natural language',
+      inputPlaceholder: 'Describe the agent (e.g., "A market researcher that uses Google Search...")',
+      previewTitle: 'Agent Configuration Preview',
+      generatedPrompt: 'Generated System Instruction',
+      tools: 'Enabled Tools',
+      save: 'Deploy Agent',
+      thinking: 'Architecting...'
     }
   },
   zh: {
@@ -59,6 +70,7 @@ export const translations = {
       orchestration: '智能体编排 (FSM)',
       ontology: '本体知识图谱',
       logs: '实时事件流',
+      create: '创建智能体',
       config: '平台配置',
       version: 'V 2.5.0-beta',
       env: '环境: PROD-US-EAST'
@@ -103,6 +115,16 @@ export const translations = {
     },
     system: {
       healthy: '系统健康'
+    },
+    creator: {
+      title: '智能体架构工作室',
+      subtitle: '生成式配置 • 使用自然语言描述您的智能体',
+      inputPlaceholder: '描述智能体 (例如: "一个使用Google搜索的市场调研员...")',
+      previewTitle: '智能体配置预览',
+      generatedPrompt: '生成的系统指令 (System Prompt)',
+      tools: '启用工具',
+      save: '部署智能体',
+      thinking: '架构设计中...'
     }
   }
 };

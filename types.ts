@@ -50,3 +50,20 @@ export interface SystemMetric {
   change: number;
   unit: string;
 }
+
+// New Types for Agent Creator
+export interface AgentConfig {
+  name: string;
+  role: string;
+  description: string;
+  systemPrompt: string;
+  model: string;
+  temperature: number;
+  tools: string[];
+}
+
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  isThinking?: boolean;
+}

@@ -3,6 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { FSMVisualizer } from './components/FSMVisualizer';
 import { OntologyGraph } from './components/OntologyGraph';
 import { EventStream } from './components/EventStream';
+import { AgentCreator } from './components/AgentCreator';
 import { analyzeSystemHealth } from './services/geminiService';
 import { Lang, translations } from './translations';
 import { 
@@ -140,6 +141,8 @@ const App: React.FC = () => {
             </div>
           </div>
         );
+      case 'create':
+        return <div className="p-6 h-screen"><AgentCreator lang={lang} /></div>;
       case 'orchestration':
         return <div className="h-[calc(100vh-100px)] p-6"><FSMVisualizer lang={lang} /></div>;
       case 'ontology':
@@ -160,12 +163,14 @@ const App: React.FC = () => {
           <div>
              <h2 className="text-2xl font-bold text-white tracking-tight">
                {activeView === 'dashboard' && t.dashboard.title}
+               {activeView === 'create' && t.sidebar.create}
                {activeView === 'orchestration' && t.sidebar.orchestration}
                {activeView === 'ontology' && t.sidebar.ontology}
                {activeView === 'logs' && t.sidebar.logs}
              </h2>
              <p className="text-gray-400 mt-1">
-               {t.dashboard.subtitle} <span className="text-nexus-success font-mono">k8s-prod-agent-01</span>
+               {activeView === 'create' ? t.creator.subtitle : t.dashboard.subtitle + " "} 
+               {activeView !== 'create' && <span className="text-nexus-success font-mono">k8s-prod-agent-01</span>}
              </p>
           </div>
           

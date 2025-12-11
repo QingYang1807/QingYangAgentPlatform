@@ -6,7 +6,7 @@ import {
   TerminalSquare, 
   Settings, 
   Cpu,
-  Globe
+  PlusCircle
 } from 'lucide-react';
 import { Lang, translations } from '../translations';
 
@@ -22,6 +22,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, lan
 
   const menuItems = [
     { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
+    { id: 'create', label: t.create, icon: PlusCircle, highlight: true },
     { id: 'orchestration', label: t.orchestration, icon: Network },
     { id: 'ontology', label: t.ontology, icon: Share2 },
     { id: 'logs', label: t.logs, icon: TerminalSquare },
@@ -44,10 +45,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, lan
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-200 ${
               activeView === item.id 
                 ? 'bg-nexus-800 text-nexus-accent border-l-2 border-nexus-accent shadow-lg shadow-black/20' 
-                : 'text-gray-400 hover:bg-nexus-800 hover:text-white'
+                : item.highlight 
+                    ? 'text-white bg-nexus-purple/10 border border-nexus-purple/30 hover:bg-nexus-purple/20' 
+                    : 'text-gray-400 hover:bg-nexus-800 hover:text-white'
             }`}
           >
-            <item.icon size={18} />
+            <item.icon size={18} className={item.highlight ? 'text-nexus-purple' : ''} />
             <span className="text-sm font-medium">{item.label}</span>
           </button>
         ))}
