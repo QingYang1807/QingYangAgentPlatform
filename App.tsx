@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { FSMVisualizer } from './components/FSMVisualizer';
 import { OntologyGraph } from './components/OntologyGraph';
 import { EventStream } from './components/EventStream';
 import { analyzeSystemHealth } from './services/geminiService';
+import { Lang, translations } from './translations';
 import { 
   Activity, 
   Database, 
@@ -47,14 +48,17 @@ const StatCard: React.FC<{ title: string; value: string; change: string; icon: R
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
+  const [lang, setLang] = useState<Lang>('zh');
   const [aiInsight, setAiInsight] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const t = translations[lang];
 
   const handleAiAnalysis = async () => {
     setIsAnalyzing(true);
     // Simulate log snapshot
     const logSnapshot = "System Throughput: 2450 req/sec. Average Latency: 145ms. VectorDB Cache Hit Rate: 92%. Active Agents: 342. Error Rate: 0.4%.";
-    const insight = await analyzeSystemHealth(logSnapshot);
+    const insight = await analyzeSystemHealth(logSnapshot, lang);
     setAiInsight(insight);
     setIsAnalyzing(false);
   };
@@ -66,17 +70,17 @@ const App: React.FC = () => {
           <div className="space-y-6 animate-in fade-in duration-500">
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <StatCard title="Total Pipeline Throughput" value="1.2M req/day" change="+12.5%" icon={Activity} color="text-nexus-accent" />
-              <StatCard title="Active Agents" value="342" change="+4" icon={Zap} color="text-nexus-purple" />
-              <StatCard title="VectorDB Latency (P99)" value="145ms" change="-12ms" icon={Database} color="text-nexus-success" />
-              <StatCard title="Ontology Entities" value="1,402" change="+24" icon={Server} color="text-nexus-warning" />
+              <StatCard title={t.dashboard.stats.throughput} value="1.2M req/day" change="+12.5%" icon={Activity} color="text-nexus-accent" />
+              <StatCard title={t.dashboard.stats.activeAgents} value="342" change="+4" icon={Zap} color="text-nexus-purple" />
+              <StatCard title={t.dashboard.stats.latency} value="145ms" change="-12ms" icon={Database} color="text-nexus-success" />
+              <StatCard title={t.dashboard.stats.entities} value="1,402" change="+24" icon={Server} color="text-nexus-warning" />
             </div>
 
             {/* Main Visuals Row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[400px]">
               {/* Chart */}
               <div className="lg:col-span-2 bg-nexus-800 p-6 rounded-lg border border-nexus-700 flex flex-col">
-                <h3 className="text-lg font-bold text-white mb-4">Pipeline Throughput (Token Velocity)</h3>
+                <h3 className="text-lg font-bold text-white mb-4">{t.dashboard.chartTitle}</h3>
                 <div className="flex-1">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data}>
@@ -104,14 +108,14 @@ const App: React.FC = () => {
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <Sparkles className="text-nexus-purple" size={18} />
-                    Gemini Copilot
+                    {t.dashboard.copilot.title}
                   </h3>
                   <button 
                     onClick={handleAiAnalysis}
                     disabled={isAnalyzing}
                     className="text-xs px-3 py-1 bg-nexus-purple/20 text-nexus-purple border border-nexus-purple/50 rounded hover:bg-nexus-purple/30 transition disabled:opacity-50"
                   >
-                    {isAnalyzing ? "Thinking..." : "Analyze Infra"}
+                    {isAnalyzing ? t.dashboard.copilot.thinking : t.dashboard.copilot.button}
                   </button>
                 </div>
                 <div className="flex-1 bg-nexus-900 rounded p-4 font-mono text-sm text-gray-300 leading-relaxed border border-nexus-700 overflow-y-auto">
@@ -121,9 +125,8 @@ const App: React.FC = () => {
                         {aiInsight}
                      </div>
                    ) : (
-                     <div className="h-full flex flex-col items-center justify-center text-gray-600">
-                       <p>System operational.</p>
-                       <p className="text-xs mt-2">Click Analyze to run diagnostics.</p>
+                     <div className="h-full flex flex-col items-center justify-center text-gray-600 text-center px-4">
+                       <p>{t.dashboard.copilot.placeholder}</p>
                      </div>
                    )}
                 </div>
@@ -132,17 +135,17 @@ const App: React.FC = () => {
 
             {/* Bottom Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[300px]">
-               <FSMVisualizer />
-               <EventStream />
+               <FSMVisualizer lang={lang} />
+               <EventStream lang={lang} />
             </div>
           </div>
         );
       case 'orchestration':
-        return <div className="h-[calc(100vh-100px)] p-6"><FSMVisualizer /></div>;
+        return <div className="h-[calc(100vh-100px)] p-6"><FSMVisualizer lang={lang} /></div>;
       case 'ontology':
-        return <div className="h-[calc(100vh-100px)] p-6"><OntologyGraph /></div>;
+        return <div className="h-[calc(100vh-100px)] p-6"><OntologyGraph lang={lang} /></div>;
       case 'logs':
-        return <div className="h-[calc(100vh-100px)] p-6"><EventStream /></div>;
+        return <div className="h-[calc(100vh-100px)] p-6"><EventStream lang={lang} /></div>;
       default:
         return null;
     }
@@ -150,26 +153,26 @@ const App: React.FC = () => {
 
   return (
     <div className="flex min-h-screen font-sans bg-nexus-900 text-gray-100">
-      <Sidebar activeView={activeView} setActiveView={setActiveView} />
+      <Sidebar activeView={activeView} setActiveView={setActiveView} lang={lang} setLang={setLang} />
       
       <main className="ml-64 flex-1 p-8 overflow-y-auto h-screen">
         <header className="flex justify-between items-center mb-8">
           <div>
              <h2 className="text-2xl font-bold text-white tracking-tight">
-               {activeView === 'dashboard' && 'Infrastructure Overview'}
-               {activeView === 'orchestration' && 'Multi-Agent Orchestrator'}
-               {activeView === 'ontology' && 'Enterprise Ontology'}
-               {activeView === 'logs' && 'Real-time Trace'}
+               {activeView === 'dashboard' && t.dashboard.title}
+               {activeView === 'orchestration' && t.sidebar.orchestration}
+               {activeView === 'ontology' && t.sidebar.ontology}
+               {activeView === 'logs' && t.sidebar.logs}
              </h2>
              <p className="text-gray-400 mt-1">
-               Connected to cluster <span className="text-nexus-success font-mono">k8s-prod-agent-01</span>
+               {t.dashboard.subtitle} <span className="text-nexus-success font-mono">k8s-prod-agent-01</span>
              </p>
           </div>
           
           <div className="flex items-center gap-4">
              <div className="flex items-center gap-2 px-3 py-1.5 bg-nexus-800 rounded-full border border-nexus-700">
                 <div className="w-2 h-2 rounded-full bg-nexus-success animate-pulse"></div>
-                <span className="text-xs font-medium text-gray-300">System Healthy</span>
+                <span className="text-xs font-medium text-gray-300">{t.system.healthy}</span>
              </div>
              <img src="https://picsum.photos/40/40" alt="Profile" className="w-10 h-10 rounded-full border-2 border-nexus-700" />
           </div>

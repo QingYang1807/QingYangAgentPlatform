@@ -1,5 +1,5 @@
 {
-  "name": "Nexus Agent Infra",
+  "name": "QingYangAgentPlatform",
   "description": "A high-performance Agent Orchestration Platform featuring FSM visualization, Ontology Knowledge Graph, and Real-time Pipeline Observability.",
   "requestFramePermissions": []
 }

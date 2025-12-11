@@ -1,10 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { OntologyNode, OntologyLink } from '../types';
+import { Lang, translations } from '../translations';
 
-export const OntologyGraph: React.FC = () => {
+interface OntologyGraphProps {
+  lang: Lang;
+}
+
+export const OntologyGraph: React.FC<OntologyGraphProps> = ({ lang }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const t = translations[lang].ontology;
 
   useEffect(() => {
     if (!svgRef.current || !containerRef.current) return;
@@ -139,8 +145,8 @@ export const OntologyGraph: React.FC = () => {
   return (
     <div className="h-full flex flex-col">
        <div className="mb-4">
-        <h2 className="text-xl font-bold text-white">Ontology Knowledge Layer</h2>
-        <p className="text-sm text-gray-400">Semantic Graph automatically extracted from business data (Insight Agent)</p>
+        <h2 className="text-xl font-bold text-white">{t.title}</h2>
+        <p className="text-sm text-gray-400">{t.subtitle}</p>
       </div>
       <div ref={containerRef} className="flex-1 bg-nexus-900 border border-nexus-700 rounded-lg overflow-hidden shadow-inner">
         <svg ref={svgRef} className="w-full h-full"></svg>

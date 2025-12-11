@@ -1,19 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { AgentNode, AgentStatus } from '../types';
 import { Play, Pause, RotateCcw, Zap } from 'lucide-react';
+import { Lang, translations } from '../translations';
 
-const INITIAL_NODES: AgentNode[] = [
-  { id: 'start', label: 'Input Trigger', type: 'start', status: AgentStatus.COMPLETED, x: 50, y: 200 },
-  { id: 'planner', label: 'Planner Agent', type: 'planner', status: AgentStatus.EXECUTING, x: 250, y: 200 },
-  { id: 'executor_sql', label: 'Text2SQL Agent', type: 'executor', status: AgentStatus.IDLE, x: 500, y: 100 },
-  { id: 'executor_rag', label: 'RAG Retriever', type: 'executor', status: AgentStatus.IDLE, x: 500, y: 300 },
-  { id: 'aggregator', label: 'Result Aggregator', type: 'reviewer', status: AgentStatus.IDLE, x: 750, y: 200 },
-  { id: 'end', label: 'Final Response', type: 'end', status: AgentStatus.IDLE, x: 950, y: 200 },
+interface FSMVisualizerProps {
+  lang: Lang;
+}
+
+const getInitialNodes = (t: any): AgentNode[] => [
+  { id: 'start', label: t.nodes.start, type: 'start', status: AgentStatus.COMPLETED, x: 50, y: 200 },
+  { id: 'planner', label: t.nodes.planner, type: 'planner', status: AgentStatus.EXECUTING, x: 250, y: 200 },
+  { id: 'executor_sql', label: t.nodes.executor_sql, type: 'executor', status: AgentStatus.IDLE, x: 500, y: 100 },
+  { id: 'executor_rag', label: t.nodes.executor_rag, type: 'executor', status: AgentStatus.IDLE, x: 500, y: 300 },
+  { id: 'aggregator', label: t.nodes.aggregator, type: 'reviewer', status: AgentStatus.IDLE, x: 750, y: 200 },
+  { id: 'end', label: t.nodes.end, type: 'end', status: AgentStatus.IDLE, x: 950, y: 200 },
 ];
 
-export const FSMVisualizer: React.FC = () => {
-  const [nodes, setNodes] = useState<AgentNode[]>(INITIAL_NODES);
+export const FSMVisualizer: React.FC<FSMVisualizerProps> = ({ lang }) => {
+  const t = translations[lang].fsm;
+  const [nodes, setNodes] = useState<AgentNode[]>(getInitialNodes(t));
   const [isRunning, setIsRunning] = useState(true);
+
+  // Update labels when language changes, preserving status
+  useEffect(() => {
+    setNodes(prevNodes => {
+      const newLabels = getInitialNodes(t);
+      return prevNodes.map((node, idx) => ({
+        ...node,
+        label: newLabels[idx].label
+      }));
+    });
+  }, [lang]);
 
   // Simulate execution flow
   useEffect(() => {
@@ -72,9 +89,9 @@ export const FSMVisualizer: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
            <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <NetworkIcon /> Execution Engine (DAG)
+            <NetworkIcon /> {t.title}
            </h2>
-           <p className="text-sm text-gray-400 font-mono mt-1">LangGraph Runtime • Parallel Execution • State Recovery</p>
+           <p className="text-sm text-gray-400 font-mono mt-1">{t.subtitle}</p>
         </div>
         <div className="flex gap-2">
           <button 
@@ -84,7 +101,7 @@ export const FSMVisualizer: React.FC = () => {
             {isRunning ? <Pause size={18} /> : <Play size={18} />}
           </button>
           <button 
-             onClick={() => setNodes(INITIAL_NODES)}
+             onClick={() => setNodes(getInitialNodes(t))}
              className="p-2 bg-nexus-800 border border-nexus-600 rounded hover:bg-nexus-700 text-white transition"
           >
             <RotateCcw size={18} />
